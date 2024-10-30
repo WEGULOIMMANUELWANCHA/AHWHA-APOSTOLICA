@@ -152,9 +152,6 @@
                                 <li><a href="#" onclick="fetchBibleVersions()">Bible Versions</a></li>
                                 <li><a href="#" onclick="fetchChapters()">Chapters</a></li>
                                 <li><a href="#" onclick="fetchVerses()">Verses</a></li>
-                                <li><a href="#" onclick="fetchBooks()">Books</a></li>
-                                <li><a href="#" onclick="fetchSections()">Sections</a></li>
-                                <li><a href="#" onclick="fetchParagraphs()">Paragraphs</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -216,8 +213,12 @@
     <script>
         const apiKey = 'ba3c8247c3f559f0c2d3d160faccd001';
         const baseUrl = 'https://api.scripture.api.bible/v1';
+        let bibleId = null; // Store the selected Bible ID
+        let audioBibleId = null; // Store the selected Audio Bible ID
+        let chapterId = null; // Store the selected Chapter ID
+        let sectionId = null; // Store the selected Section ID
 
-        // Fetch Bibles
+        // Function to fetch Bibles
         async function fetchBibles() {
             const response = await fetch(`${baseUrl}/bibles`, {
                 headers: {
@@ -225,21 +226,23 @@
                 }
             });
             const data = await response.json();
+            bibleId = data.data[0]?.id; // Save the first Bible ID for further use
             renderResults(data.data, "Bibles");
         }
 
-        // Fetch Audio Bibles
+        // Function to fetch Audio Bibles
         async function fetchAudioBibles() {
-            const response = await fetch(`${baseUrl}/bibles?type=audio`, {
+            const response = await fetch(`${baseUrl}/audio-bibles`, {
                 headers: {
                     'Authorization': `Bearer ${apiKey}`
                 }
             });
             const data = await response.json();
+            audioBibleId = data.data[0]?.id; // Save the first Audio Bible ID for further use
             renderResults(data.data, "Audio Bibles");
         }
 
-        // Fetch eBook Bibles
+        // Function to fetch eBook Bibles
         async function fetchEbookBibles() {
             const response = await fetch(`${baseUrl}/bibles?type=ebook`, {
                 headers: {
@@ -250,9 +253,13 @@
             renderResults(data.data, "eBook Bibles");
         }
 
-        // Fetch Bible Versions
+        // Function to fetch Bible Versions
         async function fetchBibleVersions() {
-            const response = await fetch(`${baseUrl}/versions`, {
+            if (!bibleId) {
+                alert("Please fetch Bibles first.");
+                return;
+            }
+            const response = await fetch(`${baseUrl}/bibles/${bibleId}/versions`, {
                 headers: {
                     'Authorization': `Bearer ${apiKey}`
                 }
@@ -261,22 +268,29 @@
             renderResults(data.data, "Bible Versions");
         }
 
-        // Fetch Chapters
+        // Function to fetch Chapters
         async function fetchChapters() {
-            const bibleId = prompt("Enter Bible ID:");
+            if (!bibleId) {
+                alert("Please fetch Bibles first.");
+                return;
+            }
             const response = await fetch(`${baseUrl}/bibles/${bibleId}/chapters`, {
                 headers: {
                     'Authorization': `Bearer ${apiKey}`
                 }
             });
             const data = await response.json();
+            chapterId = data.data[0]?.id; // Save the first Chapter ID for further use
             renderResults(data.data, "Chapters");
         }
 
-        // Fetch Verses
+        // Function to fetch Verses
         async function fetchVerses() {
-            const chapterId = prompt("Enter Chapter ID:");
-            const response = await fetch(`${baseUrl}/chapters/${chapterId}/verses`, {
+            if (!chapterId) {
+                alert("Please fetch Chapters first.");
+                return;
+            }
+            const response = await fetch(`${baseUrl}/bibles/${bibleId}/chapters/${chapterId}/verses`, {
                 headers: {
                     'Authorization': `Bearer ${apiKey}`
                 }
@@ -285,51 +299,17 @@
             renderResults(data.data, "Verses");
         }
 
-        // Fetch Books
-        async function fetchBooks() {
-            const bibleId = prompt("Enter Bible ID:");
-            const response = await fetch(`${baseUrl}/bibles/${bibleId}/books`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "Books");
-        }
-
-        // Fetch Sections
-        async function fetchSections() {
-            const bookId = prompt("Enter Book ID:");
-            const response = await fetch(`${baseUrl}/books/${bookId}/sections`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "Sections");
-        }
-
-        // Fetch Paragraphs
-        async function fetchParagraphs() {
-            const sectionId = prompt("Enter Section ID:");
-            const response = await fetch(`${baseUrl}/sections/${sectionId}/paragraphs`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "Paragraphs");
-        }
-
-        // Render results to the page
-        function renderResults(data, title) {
-            const resultsDiv = document.getElementById('results');
+        // Function to render results in the results div
+        function renderResults(items, title) {
+            const resultsDiv = document.getElementById("results");
             resultsDiv.innerHTML = `<h3>${title}</h3>`;
-            data.forEach(item => {
-                resultsDiv.innerHTML += `<div class="result-item">${JSON.stringify(item)}</div>`;
+            items.forEach(item => {
+                const div = document.createElement("div");
+                div.className = "result-item";
+                div.textContent = JSON.stringify(item, null, 2); // Pretty print item details
+                resultsDiv.appendChild(div);
             });
         }
     </script>
 </body>
 </html>
-
