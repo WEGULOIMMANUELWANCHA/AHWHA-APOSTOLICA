@@ -87,7 +87,13 @@
             display: none;
             flex-direction: column;
             cursor: pointer;
+            background-color: transparent; /* Default background */
+            transition: background-color 0.3s; /* Smooth transition for hover effect */
         }
+
+        .hamburger:hover {
+             background-color: #f8f8f8; /* Same background as main content on hover */
+        } 
 
         .bar {
             height: 3px;
@@ -177,7 +183,13 @@
                 case 'searchBible': searchBible(); break;
                 default: mainContent.innerHTML = '<p class="coming-soon">Select a menu item to view content.</p>';
             }
-        }   
+        }
+
+        // Function to toggle the sidebar visibility
+        function toggleMenu() {
+            const container = document.querySelector('.container');
+            container.classList.toggle('active');
+        }  
     </script>
 </head>
 
@@ -217,7 +229,7 @@
                     <li onclick="fetchVerseById()">Verse by ID</li>
                     <li onclick="searchBible()">Search Bible</li>
                     </ul>
-                <<li onclick="loadContent('arenas')">ARENAS - People/Socials</li>
+                <li onclick="loadContent('arenas')">ARENAS - People/Socials</li>
                 <li onclick="loadContent('associates')">ASSOCIATES - Partners/Societies</li>
                 <li onclick="loadContent('atlas')">ATLAS - Places/Sections</li>
                 <li onclick="loadContent('areas')">AREAS - Processes/Systems</li>
