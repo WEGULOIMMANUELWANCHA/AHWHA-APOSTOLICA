@@ -1,315 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AHWHA APOSTOLICA</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-            background-color: #f5f5f5; /* Light beige background */
+            margin: 0;
+            background-color: #f5f5dc; /* Light brown */
+            color: #1c1c1c; /* Dark text */
         }
 
-        /* Header */
-        .company-header {
+        header {
             position: sticky;
             top: 0;
-            background-color: #4e8cb9; /* Light blue */
-            color: white;
-            padding: 15px;
+            background-color: #dcdcdc; /* Light bronze */
+            padding: 10px;
             text-align: center;
-            width: 100%;
-            z-index: 1000;
+            font-size: 1.5em;
         }
 
-        /* Sidebar Styling */
+        footer {
+            position: sticky;
+            bottom: 0;
+            background-color: #dcdcdc; /* Light bronze */
+            padding: 10px;
+            text-align: center;
+        }
+
+        .container {
+            display: flex;
+        }
+
         .sidebar {
-            width: 250px;
-            padding: 20px;
-            overflow-y: auto;
+            width: 200px;
+            background-color: #ffffff;
+            border-right: 2px solid #ccc;
+            padding: 10px;
         }
 
         .left-sidebar {
-            background-color: #d7e3ef; /* Light blue */
-            border-right: 2px solid #333; /* Darker shade for separation */
-        }
-
-        .right-sidebar {
-            background-color: #e2d9c2; /* Light bronze */
-            border-left: 2px solid #333; /* Darker shade for separation */
-        }
-
-        .sidebar h2 {
-            font-size: 1.5em;
-            margin-bottom: 10px;
-            color: #4e8cb9; /* Light blue */
-        }
-
-        .menu ul {
-            list-style-type: none;
-        }
-
-        .menu-item {
-            position: relative;
-        }
-
-        .menu a {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
-            color: #333; /* Dark text for contrast */
-            transition: background-color 0.3s;
-            border-radius: 5px; /* Rounded corners */
-        }
-
-        .menu a:hover {
-            background-color: #b0b0b0; /* Light black on hover */
-            color: white; /* Change text color on hover */
-        }
-
-        /* Submenu Styling */
-        .submenu {
-            display: none;
-            list-style-type: none;
-            padding-left: 15px;
-            margin-top: 5px;
-        }
-
-        .menu-item:hover .submenu {
-            display: block;
+            position: sticky;
+            top: 50px; /* Below the header */
         }
 
         .main-content {
-            flex: 1;
+            flex-grow: 1;
             padding: 20px;
-            overflow-y: auto;
-            background-color: #fff; /* White background for content */
         }
 
-        .main-content h2 {
-            color: #333; /* Dark color for headers */
+        .sidebar ul {
+            list-style-type: none;
+            padding: 0;
         }
 
-        .main-content p {
-            color: #555; /* Medium gray for text */
+        .sidebar li {
+            margin: 10px 0;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
 
-        /* Sticky Footer */
-        .footer {
-            background-color: #4e8cb9; /* Light blue */
-            color: white;
+        .sidebar li:hover {
+            background-color: #e0e0e0; /* Light grey */
+        }
+
+        .nested {
+            padding-left: 15px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+
+        .coming-soon {
+            color: #cd853f; /* Light bronze */
+            font-size: 1.2em;
             text-align: center;
-            padding: 10px;
-            position: sticky;
-            bottom: 0;
+            margin-top: 50px;
         }
 
-        .footer p {
-            font-size: 0.8em; /* Smaller font size */
-            margin: 0;
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
         }
 
-        /* Styles for results display */
+        .bar {
+            height: 3px;
+            width: 25px;
+            background-color: #1c1c1c; /* Light black */
+            margin: 3px 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .container.active .sidebar {
+                display: block;
+            }
         .results {
+            white-space: pre-wrap; /* Preserve formatting */
             margin-top: 20px;
         }
-
-        .result-item {
-            padding: 10px;
-            border-bottom: 1px solid #ddd; /* Light border for separation */
-        }
     </style>
-</head>
-<body>
-    <!-- Sticky Header for Company Name -->
-    <header class="company-header">
-        <h1>AHWHA APOSTOLICA</h1>
-    </header>
-
-    <!-- Left Sidebar - Platform-Specific Menu -->
-    <aside class="sidebar left-sidebar">
-        <h2>Platform Menu</h2>
-        <nav class="menu">
-            <ul>
-                <li class="menu-item">
-                    <a href="#">Applications</a>
-                    <ul class="submenu">
-                        <li class="menu-item">
-                            <a href="#" onclick="fetchBibles()">Bibles</a>
-                            <ul class="submenu">
-                                <li><a href="#" onclick="fetchAudioBibles()">Audio Bibles</a></li>
-                                <li><a href="#" onclick="fetchEbookBibles()">eBook Bibles</a></li>
-                                <li><a href="#" onclick="fetchBibleVersions()">Bible Versions</a></li>
-                                <li><a href="#" onclick="fetchChapters()">Chapters</a></li>
-                                <li><a href="#" onclick="fetchVerses()">Verses</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li class="menu-item">
-                    <a href="#">Administrate</a>
-                    <ul class="submenu">
-                        <li><a href="#">Platform Products/Stock</a></li>
-                        <li><a href="#">Platform Preferences/Settings</a></li>
-                        <li><a href="#">Platform Programs/Services</a></li>
-                        <li><a href="#">Platform Projects/Studio</a></li>
-                        <li><a href="#">Platform Plans/Stripes</a></li>
-                        <li><a href="#">Platform Permissions/Security</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">Assets</a></li>
-                <li><a href="#">Arena</a></li>
-                <li><a href="#">Associate</a></li>
-                <li><a href="#">Atlas</a></li>
-                <li><a href="#">Acquire</a></li>
-                <li><a href="#">Amount</a></li>
-                <li><a href="#">Adverts</a></li>
-                <li><a href="#">Agenda</a></li>
-                <li><a href="#">Aim</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Right Sidebar - Personal Menu -->
-    <aside class="sidebar right-sidebar">
-        <h2>Personal Menu</h2>
-        <nav class="menu">
-            <ul>
-                <li><a href="#">Activity</a></li>
-                <li><a href="#">Analysis</a></li>
-                <li><a href="#">Add-ons</a></li>
-                <li><a href="#">Automation</a></li>
-                <li><a href="#">Announcements</a></li>
-                <li><a href="#">Act (Policy)</a></li>
-                <li><a href="#">Achievements</a></li>
-                <li><a href="#">Articles</a></li>
-                <li><a href="#">About</a></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <h2>Dashboard</h2>
-        <p>Welcome to the AHWHA Apostolica Dashboard</p>
-        <div class="results" id="results"></div> <!-- Div for displaying results -->
-    </main>
-
-    <!-- Sticky Footer -->
-    <footer class="footer">
-        <p>[APOSTOLICA : ASPIRED BY THE FAITH AND AMBITIONED BY THE FOUNDATION OF GOD'S GIFT AND GRACE TO HUMANITY AS THE WORD AND THE WORKS OF CHRIST 'YESHUA' IS DESIGNED AND DEVELOPED BY ; THROUGH THE LOVE OF ALMIGHTY GOD ,THROUGH/BY THE POWER OF THE HOLY SPIRIT AND THROUGH/BY THE DISCIPLESHIP IN JESUS CHRIST; BY WEGULOIMMANUELWANCHA@GMAIL.COM{SUPPORT}, ALL GLORY AND GREATNESS AND GRATITUDE BE TO ALMIGHTY YAHWEH]</p>
-    </footer>
-
     <script>
         const apiKey = 'ba3c8247c3f559f0c2d3d160faccd001';
         const baseUrl = 'https://api.scripture.api.bible/v1';
-        let bibleId = null; // Store the selected Bible ID
-        let audioBibleId = null; // Store the selected Audio Bible ID
-        let chapterId = null; // Store the selected Chapter ID
-        let sectionId = null; // Store the selected Section ID
 
-        // Function to fetch Bibles
-        async function fetchBibles() {
-            const response = await fetch(`${baseUrl}/bibles`, {
+        async function fetchData(endpoint) {
+            const url = `${baseUrl}/${endpoint}`;
+            const response = await fetch(url, {
                 headers: {
-                    'Authorization': `Bearer ${apiKey}`
+                    'api-key': apiKey
                 }
             });
+            if (!response.ok) throw new Error("Error fetching data");
             const data = await response.json();
-            bibleId = data.data[0]?.id; // Save the first Bible ID for further use
-            renderResults(data.data, "Bibles");
+            displayData(data);
         }
 
-        // Function to fetch Audio Bibles
-        async function fetchAudioBibles() {
-            const response = await fetch(`${baseUrl}/audio-bibles`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            audioBibleId = data.data[0]?.id; // Save the first Audio Bible ID for further use
-            renderResults(data.data, "Audio Bibles");
+        function displayData(data) {
+            const mainContent = document.getElementById("main-content");
+            mainContent.innerHTML = '';  // Clear previous content
+            const dataDiv = document.createElement("div");
+            dataDiv.classList.add("results");
+            dataDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            mainContent.appendChild(dataDiv);
         }
 
-        // Function to fetch eBook Bibles
-        async function fetchEbookBibles() {
-            const response = await fetch(`${baseUrl}/bibles?type=ebook`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "eBook Bibles");
-        }
+        // Functions for each endpoint, calling fetchData with specific endpoint strings
+        function fetchBibles() { fetchData('bibles'); }
+        function fetchBibleById() { fetchData('bibles/{bibleId}'); }
+        function fetchAudioBibles() { fetchData('audio-bibles'); }
+        function fetchAudioBibleById() { fetchData('audio-bibles/{audioBibleId}'); }
+        function fetchBooks() { fetchData('bibles/{bibleId}/books'); }
+        function fetchBookById() { fetchData('bibles/{bibleId}/books/{bookId}'); }
+        function fetchAudioBooks() { fetchData('audio-bibles/{audioBibleId}/books'); }
+        function fetchAudioBookById() { fetchData('audio-bibles/{audioBibleId}/books/{bookId}'); }
+        function fetchChapters() { fetchData('bibles/{bibleId}/books/{bookId}/chapters'); }
+        function fetchChapterById() { fetchData('bibles/{bibleId}/chapters/{chapterId}'); }
+        function fetchAudioChapters() { fetchData('audio-bibles/{audioBibleId}/books/{bookId}/chapters'); }
+        function fetchAudioChapterById() { fetchData('audio-bibles/{audioBibleId}/chapters/{chapterId}'); }
+        function fetchSections() { fetchData('bibles/{bibleId}/books/{bookId}/sections'); }
+        function fetchChapterSections() { fetchData('bibles/{bibleId}/chapters/{chapterId}/sections'); }
+        function fetchSectionById() { fetchData('bibles/{bibleId}/sections/{sectionId}'); }
+        function fetchPassageById() { fetchData('bibles/{bibleId}/passages/{passageId}'); }
+        function fetchVerses() { fetchData('bibles/{bibleId}/chapters/{chapterId}/verses'); }
+        function fetchVerseById() { fetchData('bibles/{bibleId}/verses/{verseId}'); }
+        function searchBible() { fetchData('bibles/{bibleId}/search'); }
 
-        // Function to fetch Bible Versions
-        async function fetchBibleVersions() {
-            if (!bibleId) {
-                alert("Please fetch Bibles first.");
-                return;
+        // Load content based on sidebar selection
+        function loadContent(menuItem) {
+            const mainContent = document.getElementById('main-content');
+            mainContent.innerHTML = '<p class="coming-soon">Loading...</p>'; // Show loading message
+            switch (menuItem) {
+                case 'fetchBibles': fetchBibles(); break;
+                case 'fetchBibleById': fetchBibleById(); break;
+                case 'fetchAudioBibles': fetchAudioBibles(); break;
+                case 'fetchAudioBibleById': fetchAudioBibleById(); break;
+                case 'fetchBooks': fetchBooks(); break;
+                case 'fetchBookById': fetchBookById(); break;
+                case 'fetchChapters': fetchChapters(); break;
+                case 'fetchChapterById': fetchChapterById(); break;
+                case 'fetchVerses': fetchVerses(); break;
+                case 'fetchVerseById': fetchVerseById(); break;
+                case 'searchBible': searchBible(); break;
+                default: mainContent.innerHTML = '<p class="coming-soon">Select a menu item to view content.</p>';
             }
-            const response = await fetch(`${baseUrl}/bibles/${bibleId}/versions`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "Bible Versions");
-        }
-
-        // Function to fetch Chapters
-        async function fetchChapters() {
-            if (!bibleId) {
-                alert("Please fetch Bibles first.");
-                return;
-            }
-            const response = await fetch(`${baseUrl}/bibles/${bibleId}/chapters`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            chapterId = data.data[0]?.id; // Save the first Chapter ID for further use
-            renderResults(data.data, "Chapters");
-        }
-
-        // Function to fetch Verses
-        async function fetchVerses() {
-            if (!chapterId) {
-                alert("Please fetch Chapters first.");
-                return;
-            }
-            const response = await fetch(`${baseUrl}/bibles/${bibleId}/chapters/${chapterId}/verses`, {
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`
-                }
-            });
-            const data = await response.json();
-            renderResults(data.data, "Verses");
-        }
-
-        // Function to render results in the results div
-        function renderResults(items, title) {
-            const resultsDiv = document.getElementById("results");
-            resultsDiv.innerHTML = `<h3>${title}</h3>`;
-            items.forEach(item => {
-                const div = document.createElement("div");
-                div.className = "result-item";
-                div.textContent = JSON.stringify(item, null, 2); // Pretty print item details
-                resultsDiv.appendChild(div);
-            });
-        }
+        }   
     </script>
+</head>
+
+<body>
+    <header>
+        AHWHA APOSTOLICAN
+        <div class="hamburger" onclick="toggleMenu()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="sidebar left-sidebar">
+            <h2>APOSTOLICA</h2>
+            <ul>
+                <li onclick="toggleSubMenu(event)">APPS-Platforms/Softwares
+                <ul class="sub-menu" id="bible-sub-menu"> 
+                    <li onclick="fetchBibles()">Fetch Bibles</li>
+                    <li onclick="fetchBibleById()">Bible by ID</li>
+                    <li onclick="fetchAudioBibles()">Audio Bibles</li>
+                    <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
+                    <li onclick="fetchBooks()">Fetch Books</li>
+                    <li onclick="fetchBookById()">Book by ID</li>
+                    <li onclick="fetchAudioBooks()">Audio Books</li>
+                    <li onclick="fetchAudioBookById()">Audio Book by ID</li>
+                    <li onclick="fetchChapters()">Chapters</li>
+                    <li onclick="fetchChapterById()">Chapter by ID</li>
+                    <li onclick="fetchAudioChapters()">Audio Chapters</li>
+                    <li onclick="fetchAudioChapterById()">Audio Chapter by ID</li>
+                    <li onclick="fetchSections()">Sections</li>
+                    <li onclick="fetchChapterSections()">Chapter Sections</li>
+                    <li onclick="fetchSectionById()">Section by ID</li>
+                    <li onclick="fetchPassageById()">Passage by ID</li>
+                    <li onclick="fetchVerses()">Verses</li>
+                    <li onclick="fetchVerseById()">Verse by ID</li>
+                    <li onclick="searchBible()">Search Bible</li>
+                    </ul>
+                <<li onclick="loadContent('arenas')">ARENAS - People/Socials</li>
+                <li onclick="loadContent('associates')">ASSOCIATES - Partners/Societies</li>
+                <li onclick="loadContent('atlas')">ATLAS - Places/Sections</li>
+                <li onclick="loadContent('areas')">AREAS - Processes/Systems</li>
+                <li onclick="loadContent('agendas')">AGENDAS - Programs/Services</li>
+                <li onclick="loadContent('accounts')">ACCOUNTS - Plans/Sales</li>
+                <li onclick="loadContent('adverts')">ADVERTS - Promotions/Sellings</li>
+                <li onclick="loadContent('abouts')">ABOUTS - Portfolios/Speeches</li>
+                <li onclick="loadContent('acts')">ACTS - Policies/Statutes</li>
+                <li onclick="loadContent('articles')">ARTICLES - Publications/Stories</li>
+            </ul>
+        </div>
+
+        <div class="main-content" id="main-content">
+            <h2>Welcome to AHWHA APOSTOLICA</h2>
+            <p>Select an option from the side menu to fetch data.</p>
+        </div>
+
+        <div class="sidebar right-sidebar">
+            <h2>ADMIN</h2>
+            <ul>
+                <li onclick="loadContent('admins')">ADMINS - Profiles/Settings</li>
+                <li onclick="loadContent('amounts')">AMOUNTS - Payments/Savings</li>
+                <li onclick="loadContent('acquires')">ACQUIRES - Products/Services</li>
+                <li onclick="loadContent('ateliers')">ATELIERS - Projects/Studios</li>
+                <li onclick="loadContent('announces')">ANNOUNCES - Postings/Signs</li>
+                <li onclick="loadContent('archives')">ARCHIEVES - Progress/Saves</li>
+                <li onclick="loadContent('allys')">ALLYS - Pals/Supports</li>
+                <li onclick="loadContent('automates')">AUTOMATES - Processes/Systems</li>
+                <li onclick="loadContent('activities')">ACTIVITIES - Past/Saves</li>
+                <li onclick="loadContent('analysis')">ANALYSIS - Patterns/Statistics</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        AHWHA Conglomerate &copy; 2024
+    </footer>
 </body>
+
 </html>
