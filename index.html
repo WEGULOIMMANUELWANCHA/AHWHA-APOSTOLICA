@@ -1,1 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bible App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
 
+        #app {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #content {
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+        }
+
+        #dataDisplay {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <nav id="menu">
+            <button onclick="fetchBibles()">Bibles</button>
+            <button onclick="fetchAudioBibles()">Audio Bibles</button>
+        </nav>
+        <div id="content">
+            <h1>Welcome to the Bible App</h1>
+            <div id="dataDisplay"></div>
+        </div>
+    </div>
+    <script>
+        const apiUrl = "https://api.yourbibleapi.com/v1";
+
+        async function fetchBibles() {
+            const response = await fetch(`${apiUrl}/bibles`);
+            const bibles = await response.json();
+            displayBibles(bibles);
+        }
+
+        async function fetchAudioBibles() {
+            const response = await fetch(`${apiUrl}/audio-bibles`);
+            const audioBibles = await response.json();
+            displayAudioBibles(audioBibles);
+        }
+
+        function displayBibles(bibles) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Bibles</h2>';
+            bibles.forEach(bible => {
+                const bibleButton = document.createElement('button');
+                bibleButton.textContent = bible.name;
+                bibleButton.onclick = () => fetchBooks(bible.id);
+                dataDisplay.appendChild(bibleButton);
+            });
+        }
+
+        function displayAudioBibles(audioBibles) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Audio Bibles</h2>';
+            audioBibles.forEach(audioBible => {
+                const audioBibleButton = document.createElement('button');
+                audioBibleButton.textContent = audioBible.name;
+                audioBibleButton.onclick = () => fetchAudioBooks(audioBible.id);
+                dataDisplay.appendChild(audioBibleButton);
+            });
+        }
+
+        async function fetchBooks(bibleId) {
+            const response = await fetch(`${apiUrl}/bibles/${bibleId}/books`);
+            const books = await response.json();
+            displayBooks(books, bibleId);
+        }
+
+        async function fetchAudioBooks(audioBibleId) {
+            const response = await fetch(`${apiUrl}/audio-bibles/${audioBibleId}/books`);
+            const books = await response.json();
+            displayAudioBooks(books, audioBibleId);
+        }
+
+        function displayBooks(books, bibleId) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Books</h2>';
+            books.forEach(book => {
+                const bookButton = document.createElement('button');
+                bookButton.textContent = book.name;
+                bookButton.onclick = () => fetchChapters(bibleId, book.id);
+                dataDisplay.appendChild(bookButton);
+            });
+        }
+
+        function displayAudioBooks(books, audioBibleId) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Audio Books</h2>';
+            books.forEach(book => {
+                const bookButton = document.createElement('button');
+                bookButton.textContent = book.name;
+                bookButton.onclick = () => fetchAudioChapters(audioBibleId, book.id);
+                dataDisplay.appendChild(bookButton);
+            });
+        }
+
+        async function fetchChapters(bibleId, bookId) {
+            const response = await fetch(`${apiUrl}/bibles/${bibleId}/books/${bookId}/chapters`);
+            const chapters = await response.json();
+            displayChapters(chapters, bibleId, bookId);
+        }
+
+        async function fetchAudioChapters(audioBibleId, bookId) {
+            const response = await fetch(`${apiUrl}/audio-bibles/${audioBibleId}/books/${bookId}/chapters`);
+            const chapters = await response.json();
+            displayAudioChapters(chapters, audioBibleId, bookId);
+        }
+
+        function displayChapters(chapters, bibleId, bookId) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Chapters</h2>';
+            chapters.forEach(chapter => {
+                const chapterButton = document.createElement('button');
+                chapterButton.textContent = `Chapter ${chapter.number}`;
+                chapterButton.onclick = () => fetchVerses(bibleId, chapter.id);
+                dataDisplay.appendChild(chapterButton);
+            });
+        }
+
+        function displayAudioChapters(chapters, audioBibleId, bookId) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Audio Chapters</h2>';
+            chapters.forEach(chapter => {
+                const chapterButton = document.createElement('button');
+                chapterButton.textContent = `Chapter ${chapter.number}`;
+                chapterButton.onclick = () => fetchAudioVerses(audioBibleId, chapter.id);
+                dataDisplay.appendChild(chapterButton);
+            });
+        }
+
+        async function fetchVerses(bibleId, chapterId) {
+            const response = await fetch(`${apiUrl}/bibles/${bibleId}/chapters/${chapterId}/verses`);
+            const verses = await response.json();
+            displayVerses(verses);
+        }
+
+        async function fetchAudioVerses(audioBibleId, chapterId) {
+            const response = await fetch(`${apiUrl}/audio-bibles/${audioBibleId}/chapters/${chapterId}/verses`);
+            const verses = await response.json();
+            displayVerses(verses);
+        }
+
+        function displayVerses(verses) {
+            const dataDisplay = document.getElementById('dataDisplay');
+            dataDisplay.innerHTML = '<h2>Verses</h2>';
+            verses.forEach(verse => {
+                const verseText = document.createElement('p');
+                verseText.textContent = `${verse.number}. ${verse.text}`;
+                dataDisplay.appendChild(verseText);
+            });
+        }
+    </script>
+</body>
+</html>
