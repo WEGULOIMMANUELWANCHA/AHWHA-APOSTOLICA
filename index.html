@@ -42,10 +42,16 @@
             padding: 10px;
         }
 
-        .left-sidebar,
-        .right-sidebar {
+        .left-sidebar {
             position: sticky;
             top: 50px; /* Below the header */
+            order: -1;
+        }
+
+        .right-sidebar {
+            order: 2;
+            position: sticky;
+            top: 50px;
         }
 
         .main-content {
@@ -79,6 +85,7 @@
             margin-top: 50px;
         }
 
+        /* Hamburger Menu */
         .hamburger {
             display: none;
             flex-direction: column;
@@ -111,29 +118,37 @@
                 display: block;
             }
         }
-
-        .container.active-left .left-sidebar {
-            display: block;
-        }
-
-        .container.active-right .right-sidebar {
-            display: block;
-        }
     </style>
     <script>
         const apiKey = 'ba3c8247c3f559f0c2d3d160faccd001';
         const baseUrl = 'https://api.scripture.api.bible/v1';
 
         async function fetchData(endpoint) {
-            const url = `${baseUrl}/${endpoint}`;
+            const url = `${baseUrl}/${endpoint}`;  // Corrected URL construction
             const response = await fetch(url, {
                 headers: {
                     'api-key': apiKey
                 }
             });
-            if (!response.ok) throw new Error("Error fetching data");
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || "Error fetching data");
+            }
             const data = await response.json();
             displayDataInReadableText(data);
+        }
+
+        function displayData(data) {
+            const mainContent = document.getElementById("main-content");
+            mainContent.innerHTML = '';  // Clear previous content
+            const dataDiv = document.createElement("div");
+            dataDiv.classList.add("results");
+            if (Array.isArray(data.data)) {
+                dataDiv.innerHTML = data.data.map(item => `<p>${item.name || item.title || 'Unnamed'}</p>`).join('');
+            } else {
+                dataDiv.innerHTML = `<p>${data.data.name || data.data.title || 'Unnamed'}</p>`;
+            }
+            mainContent.appendChild(dataDiv);
         }
 
         function displayDataInReadableText(data) {
@@ -146,7 +161,6 @@
                 readableText += `<p><strong>${key}:</strong> ${Array.isArray(value) ? value.join(', ') : value}</p>`;
             }
             readableText += '</div>';
-
             mainContent.innerHTML = readableText;
         }
 
@@ -198,60 +212,62 @@
             const rightSidebar = document.querySelector('.right-sidebar');
             rightSidebar.classList.toggle('active');
         }
+
+        // Function to toggle sub-menu visibility
+        function toggleSubMenu(event) {
+            const subMenu = event.currentTarget.querySelector('.sub-menu');
+            if (subMenu) {
+                subMenu.classList.toggle('active');
+            }
+        }
     </script>
 </head>
 
 <body>
-    <header>
-        AHWHA APOSTOLICAN
-        <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-        <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
-    </header>
+   <header>
+    AHWHA APOSTOLICAN
+    <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+    <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+</header>
 
     <div class="container">
-        <div class="sidebar left-sidebar">
-            <h2>APOSTOLICA</h2>
+        <nav class="sidebar left-sidebar">
             <ul>
-                <li onclick="toggleSubMenu(event)">APPS-Platforms/Softwares
-                    <ul class="sub-menu" id="bible-sub-menu">
-                        <li onclick="fetchBibles()">Fetch Bibles</li>
-                        <li onclick="fetchBibleById()">Bible by ID</li>
-                        <li onclick="fetchAudioBibles()">Audio Bibles</li>
-                        <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
-                        <li onclick="fetchBooks()">Fetch Books</li>
-                        <li onclick="fetchBookById()">Book by ID</li>
-                        <li onclick="fetchChapters()">Chapters</li>
-                        <li onclick="fetchChapterById()">Chapter by ID</li>
-                        <li onclick="fetchVerses()">Verses</li>
-                        <li onclick="fetchVerseById()">Verse by ID</li>
-                        <li onclick="searchBible()">Search Bible</li>
-                    </ul>
-                </li>
-                <li onclick="loadContent('fetchBibles')">General Info</li>
+                <li onclick="loadContent('fetchBibles')">Bibles</li>
+                <li onclick="loadContent('fetchAudioBibles')">Audio Bibles</li>
+                <li onclick="loadContent('fetchBooks')">Books</li>
+                <li onclick="loadContent('fetchChapters')">Chapters</li>
+                <li onclick="loadContent('fetchVerses')">Verses</li>
+                <li onclick="loadContent('searchBible')">Search</li>
             </ul>
-        </div>
+        </nav>
 
         <main class="main-content" id="main-content">
-            <p class="coming-soon">Select an option from the sidebar to display content.</p>
+            <h1>Welcome to AHWHA Apostolica!</h1>
+            <p class="coming-soon">Select a menu item to view content.</p>
         </main>
 
-        <div class="sidebar right-sidebar">
-            <h2>RIGHT SIDEBAR</h2>
-            <p>Additional content can go here.</p>
-        </div>
+        <nav class="sidebar right-sidebar">
+            <ul>
+                <li onclick="loadContent('fetchBibleById')">Fetch Bible by ID</li>
+                <li onclick="loadContent('fetchAudioBibleById')">Fetch Audio Bible by ID</li>
+                <li onclick="loadContent('fetchBookById')">Fetch Book by ID</li>
+                <li onclick="loadContent('fetchChapterById')">Fetch Chapter by ID</li>
+                <li onclick="loadContent('fetchVerseById')">Fetch Verse by ID</li>
+            </ul>
+        </nav>
     </div>
 
     <footer>
-        <p>&copy; 2024 AHWHA Apostolica. All Rights Reserved.</p>
+        AHWHA APOSTOLICAN © 2024
     </footer>
 </body>
-
 </html>
