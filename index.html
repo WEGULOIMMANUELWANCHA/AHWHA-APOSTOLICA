@@ -9,28 +9,28 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #f5deb3; /* Light beige */
+            background-color: #f5f5dc; /* Light beige */
             color: #1c1c1c; /* Dark text */
         }
 
-        header {
+        header { 
             position: sticky;
             top: 0;
-            background-color: #007bff; /* Changed to blue */
+            background-color: #4a90e2; /* Blue */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
-            color: white; /* White text for contrast */
+            color: #ffffff; /* White text for better contrast */
         }
 
         footer {
             position: sticky;
             bottom: 0;
-            background-color: #007bff; /* Changed to blue */
+            background-color: #4a90e2; /* Blue */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
-            color: white; /* White text for contrast */
+            color: #ffffff; /* White text for better contrast */
         }
 
         .container {
@@ -75,6 +75,10 @@
             background-color: #e0e0e0; /* Light grey */
         }
 
+        .nested {
+            padding-left: 15px;
+        }
+
         .coming-soon {
             color: #cd853f; /* Light bronze */
             font-size: 1.2em;
@@ -98,7 +102,7 @@
         .bar {
             height: 3px;
             width: 25px;
-            background-color: #1c1c1c; /* Dark text */
+            background-color: #1c1c1c; /* Dark text color */
             margin: 3px 0;
         }
 
@@ -153,6 +157,18 @@
 
             mainContent.innerHTML = readableText;
         }
+        
+        // Functions for each endpoint
+        function fetchBibles() { fetchData('bibles'); }
+        function fetchBibleById() { fetchData('bibles/{bibleId}'); }
+        function fetchAudioBibles() { fetchData('audio-bibles'); }
+        function fetchAudioBibleById() { fetchData('audio-bibles/{audioBibleId}'); }
+        function fetchBooks() { fetchData('bibles/{bibleId}/books'); }
+        function fetchBookById() { fetchData('bibles/{bibleId}/books/{bookId}'); }
+        function fetchChapters() { fetchData('bibles/{bibleId}/books/{bookId}/chapters'); }
+        function fetchChapterById() { fetchData('bibles/{bibleId}/chapters/{chapterId}'); }
+        function fetchVerses() { fetchData('bibles/{bibleId}/chapters/{chapterId}/verses'); }
+        function fetchVerseById() { fetchData('bibles/{bibleId}/verses/{verseId}'); }
 
         // Load content based on sidebar selection
         function loadContent(menuItem) {
@@ -169,7 +185,6 @@
                 case 'fetchChapterById': fetchChapterById(); break;
                 case 'fetchVerses': fetchVerses(); break;
                 case 'fetchVerseById': fetchVerseById(); break;
-                case 'searchBible': searchBible(); break;
                 default: mainContent.innerHTML = '<p class="coming-soon">Select a menu item to view content.</p>';
             }
         }
@@ -213,21 +228,16 @@
             <ul>
                 <li onclick="toggleSubMenu(event)">APPS-Platforms/Softwares
                     <ul class="sub-menu" id="bible-sub-menu"> 
-                        <li onclick="fetchBibles()">Fetch Bibles</li>
-                        <li onclick="fetchBibleById()">Bible by ID</li>
-                        <li onclick="fetchAudioBibles()">Audio Bibles</li>
-                        <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
-                        <li onclick="fetchBooks()">Fetch Books</li>
-                        <li onclick="fetchBookById()">Book by ID</li>
-                        <li onclick="fetchAudioBooks()">Audio Books</li>
-                        <li onclick="fetchAudioBookById()">Audio Book by ID</li>
-                        <li onclick="fetchChapters()">Chapters</li>
-                        <li onclick="fetchChapterById()">Chapter by ID</li>
-                        <li onclick="fetchAudioChapters()">Audio Chapters</li>
-                        <li onclick="fetchAudioChapterById()">Audio Chapter by ID</li>
-                        <li onclick="fetchSections()">Sections</li>
-                        <li onclick="fetchChapterSections()">Chapter Sections</li>
-                        <li onclick="fetch...">Fetch More...</li>
+                        <li onclick="loadContent('fetchBibles')">Fetch Bibles</li>
+                        <li onclick="loadContent('fetchBibleById')">Bible by ID</li>
+                        <li onclick="loadContent('fetchAudioBibles')">Audio Bibles</li>
+                        <li onclick="loadContent('fetchAudioBibleById')">Audio Bible by ID</li>
+                        <li onclick="loadContent('fetchBooks')">Fetch Books</li>
+                        <li onclick="loadContent('fetchBookById')">Book by ID</li>
+                        <li onclick="loadContent('fetchChapters')">Chapters</li>
+                        <li onclick="loadContent('fetchChapterById')">Chapter by ID</li>
+                        <li onclick="loadContent('fetchVerses')">Verses</li>
+                        <li onclick="loadContent('fetchVerseById')">Verse by ID</li>
                     </ul>
                 </li>
             </ul>
@@ -236,15 +246,10 @@
         <div class="main-content" id="main-content">
             <p class="coming-soon">Select a menu item to view content.</p>
         </div>
-
-        <div class="sidebar right-sidebar">
-            <!-- Right sidebar content here -->
-        </div>
     </div>
 
     <footer>
-        AHWHA APOSTOLICA &copy; 2024
+        © 2024 AHWHA APOSTOLICA
     </footer>
 </body>
-
 </html>
