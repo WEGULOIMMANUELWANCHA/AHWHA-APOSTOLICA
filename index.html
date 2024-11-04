@@ -9,14 +9,14 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            background-color: #f5deb3; /* Light wheat */
+            background-color: #f5f5dc; /* Light beige */
             color: #1c1c1c; /* Dark text */
         }
 
-        header {
+        header { 
             position: sticky;
             top: 0;
-            background-color: #dcdcdc; /* Light bronze */
+            background-color: #add8e6; /* Light blue */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
@@ -25,7 +25,7 @@
         footer {
             position: sticky;
             bottom: 0;
-            background-color: #dcdcdc; /* Light bronze */
+            background-color: #add8e6; /* Light blue */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
@@ -37,7 +37,7 @@
 
         .sidebar {
             width: 200px;
-            background-color: #ffffff;
+            background-color: #ffffff; 
             border-right: 2px solid #ccc;
             padding: 10px;
         }
@@ -74,10 +74,6 @@
             background-color: #e0e0e0; /* Light grey */
         }
 
-        .nested {
-            padding-left: 15px;
-        }
-
         .coming-soon {
             color: #cd853f; /* Light bronze */
             font-size: 1.2em;
@@ -90,18 +86,18 @@
             display: none;
             flex-direction: column;
             cursor: pointer;
-            background-color: transparent; /* Default background */
-            transition: background-color 0.3s; /* Smooth transition for hover effect */
+            background-color: transparent;
+            transition: background-color 0.3s;
         }
 
         .hamburger:hover {
-            background-color: #f8f8f8; /* Same background as main content on hover */
+             background-color: #f8f8f8;
         }
 
         .bar {
             height: 3px;
             width: 25px;
-            background-color: #1c1c1c; /* Light black */
+            background-color: #1c1c1c; /* Dark text color */
             margin: 3px 0;
         }
 
@@ -118,53 +114,37 @@
                 display: block;
             }
         }
+        
     </style>
     <script>
         const apiKey = 'ba3c8247c3f559f0c2d3d160faccd001';
         const baseUrl = 'https://api.scripture.api.bible/v1';
 
         async function fetchData(endpoint) {
-            const url = `${baseUrl}/${endpoint}`;  // Corrected URL construction
+            const url = `${baseUrl}/${endpoint}`;
             const response = await fetch(url, {
                 headers: {
                     'api-key': apiKey
                 }
             });
-            if (!response.ok) {
-                const error = await response.json();
-                throw new Error(error.message || "Error fetching data");
-            }
+            if (!response.ok) throw new Error("Error fetching data");
             const data = await response.json();
             displayDataInReadableText(data);
-        }
-
-        function displayData(data) {
-            const mainContent = document.getElementById("main-content");
-            mainContent.innerHTML = '';  // Clear previous content
-            const dataDiv = document.createElement("div");
-            dataDiv.classList.add("results");
-            if (Array.isArray(data.data)) {
-                dataDiv.innerHTML = data.data.map(item => `<p>${item.name || item.title || 'Unnamed'}</p>`).join('');
-            } else {
-                dataDiv.innerHTML = `<p>${data.data.name || data.data.title || 'Unnamed'}</p>`;
-            }
-            mainContent.appendChild(dataDiv);
         }
 
         function displayDataInReadableText(data) {
             const mainContent = document.getElementById("main-content");
             mainContent.innerHTML = ''; // Clear previous content
 
-            // Convert JSON data to readable text
             let readableText = '<div class="results">';
             for (const [key, value] of Object.entries(data)) {
                 readableText += `<p><strong>${key}:</strong> ${Array.isArray(value) ? value.join(', ') : value}</p>`;
             }
             readableText += '</div>';
+
             mainContent.innerHTML = readableText;
         }
 
-        // Functions for each endpoint, calling fetchData with specific endpoint strings
         function fetchBibles() { fetchData('bibles'); }
         function fetchBibleById() { fetchData('bibles/{bibleId}'); }
         function fetchAudioBibles() { fetchData('audio-bibles'); }
@@ -175,29 +155,7 @@
         function fetchChapterById() { fetchData('bibles/{bibleId}/chapters/{chapterId}'); }
         function fetchVerses() { fetchData('bibles/{bibleId}/chapters/{chapterId}/verses'); }
         function fetchVerseById() { fetchData('bibles/{bibleId}/verses/{verseId}'); }
-        function searchBible() { fetchData('bibles/{bibleId}/search'); }
 
-        // Load content based on sidebar selection
-        function loadContent(menuItem) {
-            const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = '<p class="coming-soon">Loading...</p>'; // Show loading message
-            switch (menuItem) {
-                case 'fetchBibles': fetchBibles(); break;
-                case 'fetchBibleById': fetchBibleById(); break;
-                case 'fetchAudioBibles': fetchAudioBibles(); break;
-                case 'fetchAudioBibleById': fetchAudioBibleById(); break;
-                case 'fetchBooks': fetchBooks(); break;
-                case 'fetchBookById': fetchBookById(); break;
-                case 'fetchChapters': fetchChapters(); break;
-                case 'fetchChapterById': fetchChapterById(); break;
-                case 'fetchVerses': fetchVerses(); break;
-                case 'fetchVerseById': fetchVerseById(); break;
-                case 'searchBible': searchBible(); break;
-                default: mainContent.innerHTML = '<p class="coming-soon">Select a menu item to view content.</p>';
-            }
-        }
-
-        // Function to toggle the sidebar visibility
         function toggleMenu() {
             const container = document.querySelector('.container');
             container.classList.toggle('active');
@@ -212,62 +170,49 @@
             const rightSidebar = document.querySelector('.right-sidebar');
             rightSidebar.classList.toggle('active');
         }
-
-        // Function to toggle sub-menu visibility
-        function toggleSubMenu(event) {
-            const subMenu = event.currentTarget.querySelector('.sub-menu');
-            if (subMenu) {
-                subMenu.classList.toggle('active');
-            }
-        }
     </script>
 </head>
 
 <body>
-   <header>
-    AHWHA APOSTOLICAN
-    <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-    <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-</header>
+    <header>
+        AHWHA APOSTOLICA
+        <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
 
     <div class="container">
-        <nav class="sidebar left-sidebar">
+        <div class="sidebar left-sidebar">
+            <h2>APOSTOLICA</h2>
             <ul>
-                <li onclick="loadContent('fetchBibles')">Bibles</li>
-                <li onclick="loadContent('fetchAudioBibles')">Audio Bibles</li>
-                <li onclick="loadContent('fetchBooks')">Books</li>
-                <li onclick="loadContent('fetchChapters')">Chapters</li>
-                <li onclick="loadContent('fetchVerses')">Verses</li>
-                <li onclick="loadContent('searchBible')">Search</li>
+                <li onclick="fetchBibles()">Fetch Bibles</li>
+                <li onclick="fetchBibleById()">Bible by ID</li>
+                <li onclick="fetchAudioBibles()">Audio Bibles</li>
+                <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
+                <li onclick="fetchBooks()">Fetch Books</li>
+                <li onclick="fetchBookById()">Book by ID</li>
+                <li onclick="fetchChapters()">Chapters</li>
+                <li onclick="fetchChapterById()">Chapter by ID</li>
+                <li onclick="fetchVerses()">Verses</li>
+                <li onclick="fetchVerseById()">Verse by ID</li>
             </ul>
-        </nav>
+        </div>
 
-        <main class="main-content" id="main-content">
-            <h1>Welcome to AHWHA Apostolica!</h1>
+        <div id="main-content" class="main-content">
             <p class="coming-soon">Select a menu item to view content.</p>
-        </main>
-
-        <nav class="sidebar right-sidebar">
-            <ul>
-                <li onclick="loadContent('fetchBibleById')">Fetch Bible by ID</li>
-                <li onclick="loadContent('fetchAudioBibleById')">Fetch Audio Bible by ID</li>
-                <li onclick="loadContent('fetchBookById')">Fetch Book by ID</li>
-                <li onclick="loadContent('fetchChapterById')">Fetch Chapter by ID</li>
-                <li onclick="loadContent('fetchVerseById')">Fetch Verse by ID</li>
-            </ul>
-        </nav>
+        </div>
     </div>
 
     <footer>
-        AHWHA APOSTOLICAN © 2024
+        &copy; 2024 AHWHA APOSTOLICA
     </footer>
 </body>
+
 </html>
