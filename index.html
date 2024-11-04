@@ -13,10 +13,10 @@
             color: #1c1c1c; /* Dark text */
         }
 
-        header { 
+        header {
             position: sticky;
             top: 0;
-            background-color: #dcdcdc; /* Light bronze */(
+            background-color: #dcdcdc; /* Light bronze */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
@@ -25,7 +25,7 @@
         footer {
             position: sticky;
             bottom: 0;
-            background-color: #dcdcdc; /* Light bronze */ 
+            background-color: #dcdcdc; /* Light bronze */
             padding: 10px;
             text-align: center;
             font-size: 1.5em;
@@ -37,26 +37,17 @@
 
         .sidebar {
             width: 200px;
-            background-color: #ffffff; 
+            background-color: #ffffff;
             border-right: 2px solid #ccc;
             padding: 10px;
         }
 
-        .left-sidebar {
+        .left-sidebar,
+        .right-sidebar {
             position: sticky;
             top: 50px; /* Below the header */
-        }
-       .left-sidebar {
-            position: sticky;
-            top: 50px; /* Below the header */
-            order: -1;
         }
 
-        .right-sidebar {
-            order: 2;
-            position: sticky;
-            top: 50px;
-        }
         .main-content {
             flex-grow: 1;
             padding: 20px;
@@ -81,11 +72,6 @@
             padding-left: 15px;
         }
 
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-        }
-
         .coming-soon {
             color: #cd853f; /* Light bronze */
             font-size: 1.2em;
@@ -93,7 +79,6 @@
             margin-top: 50px;
         }
 
-        /* Hamburger Menu */ 
         .hamburger {
             display: none;
             flex-direction: column;
@@ -103,8 +88,8 @@
         }
 
         .hamburger:hover {
-             background-color: #f8f8f8; /* Same background as main content on hover */
-        } 
+            background-color: #f8f8f8; /* Same background as main content on hover */
+        }
 
         .bar {
             height: 3px;
@@ -126,23 +111,21 @@
                 display: block;
             }
         }
-            .container.active-left .left-sidebar {
-                  display: block;
-            } 
 
-            .container.active-right .right-sidebar {
-              display: block;
-            }
-         
-        
-        
+        .container.active-left .left-sidebar {
+            display: block;
+        }
+
+        .container.active-right .right-sidebar {
+            display: block;
+        }
     </style>
     <script>
         const apiKey = 'ba3c8247c3f559f0c2d3d160faccd001';
         const baseUrl = 'https://api.scripture.api.bible/v1';
 
         async function fetchData(endpoint) {
-            const url = ${baseUrl}/${endpoint};
+            const url = `${baseUrl}/${endpoint}`;
             const response = await fetch(url, {
                 headers: {
                     'api-key': apiKey
@@ -150,21 +133,7 @@
             });
             if (!response.ok) throw new Error("Error fetching data");
             const data = await response.json();
-             displayDataInReadableText(data);
-        }
-
-        function displayData(data) {
-            const mainContent = document.getElementById("main-content");
-            mainContent.innerHTML = '';  // Clear previous content
-            const dataDiv = document.createElement("div");
-            dataDiv.classList.add("results");
-           if (Array.isArray(data.data)) {
-                dataDiv.innerHTML = data.data.map(item => `<p>${item.name || item.title || 'Unnamed'}</p>`).join('');
-            } else {
-                dataDiv.innerHTML = `<p>${data.data.name || data.data.title || 'Unnamed'}</p>`;
-            }
-
-            mainContent.appendChild(dataDiv);
+            displayDataInReadableText(data);
         }
 
         function displayDataInReadableText(data) {
@@ -180,58 +149,7 @@
 
             mainContent.innerHTML = readableText;
         }
-        
-        function formatData(data) {
-            let formatted = '';
-            // Customize this based on the data structure returned by the API
-            if (data && Array.isArray(data)) {
-                formatted = '<ul>';
-                data.forEach(item => {
-                    formatted += `<li>${item.name || item.id || JSON.stringify(item)}</li>`;
-                });
-                formatted += '</ul>';
-            } else {
-                formatted = JSON.stringify(data, null, 2);
-            }
-            return formatted;
-        }
-        
-        function formatData(data) {
-            // Format data into human-readable text
-            let formattedText = '';
-            for (const [key, value] of Object.entries(data)) {
-                formattedText += `${key}: ${JSON.stringify(value, null, 2)}\n\n`;
-            }
-            return formattedText.replace(/"/g, '').replace(/:\s/g, ': ');
-        }
 
-        function displayData(data) {
-            const mainContent = document.getElementById("main-content");
-            mainContent.innerHTML = ''; // Clear previous content
-
-            // Assuming the data is an object, iterate over its keys and values to format the content
-            const dataDiv = document.createElement("div");
-            dataDiv.classList.add("results");
-
-            // Create a human-readable format
-            for (const [key, value] of Object.entries(data)) {
-                const item = document.createElement("p");
-                item.textContent = `${key}: ${Array.isArray(value) ? value.join(', ') : value}`;
-                dataDiv.appendChild(item);
-            }
-
-            mainContent.appendChild(dataDiv);
-        }
-
-        function formatValue(value) {
-            if (Array.isArray(value)) {
-                return value.join(", "); // Join array values with commas
-            } else if (typeof value === 'object') {
-                return JSON.stringify(value, null, 2); // Convert object to a readable string
-            } else {
-                return value; // Return simple values as they are
-            }
-        }
         // Functions for each endpoint, calling fetchData with specific endpoint strings
         function fetchBibles() { fetchData('bibles'); }
         function fetchBibleById() { fetchData('bibles/{bibleId}'); }
@@ -239,16 +157,8 @@
         function fetchAudioBibleById() { fetchData('audio-bibles/{audioBibleId}'); }
         function fetchBooks() { fetchData('bibles/{bibleId}/books'); }
         function fetchBookById() { fetchData('bibles/{bibleId}/books/{bookId}'); }
-        function fetchAudioBooks() { fetchData('audio-bibles/{audioBibleId}/books'); }
-        function fetchAudioBookById() { fetchData('audio-bibles/{audioBibleId}/books/{bookId}'); }
         function fetchChapters() { fetchData('bibles/{bibleId}/books/{bookId}/chapters'); }
         function fetchChapterById() { fetchData('bibles/{bibleId}/chapters/{chapterId}'); }
-        function fetchAudioChapters() { fetchData('audio-bibles/{audioBibleId}/books/{bookId}/chapters'); }
-        function fetchAudioChapterById() { fetchData('audio-bibles/{audioBibleId}/chapters/{chapterId}'); }
-        function fetchSections() { fetchData('bibles/{bibleId}/books/{bookId}/sections'); }
-        function fetchChapterSections() { fetchData('bibles/{bibleId}/chapters/{chapterId}/sections'); }
-        function fetchSectionById() { fetchData('bibles/{bibleId}/sections/{sectionId}'); }
-        function fetchPassageById() { fetchData('bibles/{bibleId}/passages/{passageId}'); }
         function fetchVerses() { fetchData('bibles/{bibleId}/chapters/{chapterId}/verses'); }
         function fetchVerseById() { fetchData('bibles/{bibleId}/verses/{verseId}'); }
         function searchBible() { fetchData('bibles/{bibleId}/search'); }
@@ -292,83 +202,55 @@
 </head>
 
 <body>
-   <header>
-    AHWHA APOSTOLICAN
-    <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-    <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
-    </div>
-</header>
+    <header>
+        AHWHA APOSTOLICAN
+        <div class="hamburger left-hamburger" onclick="toggleLeftSidebar()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+        <div class="hamburger right-hamburger" onclick="toggleRightSidebar()">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </header>
 
     <div class="container">
         <div class="sidebar left-sidebar">
             <h2>APOSTOLICA</h2>
             <ul>
                 <li onclick="toggleSubMenu(event)">APPS-Platforms/Softwares
-                <ul class="sub-menu" id="bible-sub-menu"> 
-                    <li onclick="fetchBibles()">Fetch Bibles</li>
-                    <li onclick="fetchBibleById()">Bible by ID</li>
-                    <li onclick="fetchAudioBibles()">Audio Bibles</li>
-                    <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
-                    <li onclick="fetchBooks()">Fetch Books</li>
-                    <li onclick="fetchBookById()">Book by ID</li>
-                    <li onclick="fetchAudioBooks()">Audio Books</li>
-                    <li onclick="fetchAudioBookById()">Audio Book by ID</li>
-                    <li onclick="fetchChapters()">Chapters</li>
-                    <li onclick="fetchChapterById()">Chapter by ID</li>
-                    <li onclick="fetchAudioChapters()">Audio Chapters</li>
-                    <li onclick="fetchAudioChapterById()">Audio Chapter by ID</li>
-                    <li onclick="fetchSections()">Sections</li>
-                    <li onclick="fetchChapterSections()">Chapter Sections</li>
-                    <li onclick="fetchSectionById()">Section by ID</li>
-                    <li onclick="fetchPassageById()">Passage by ID</li>
-                    <li onclick="fetchVerses()">Verses</li>
-                    <li onclick="fetchVerseById()">Verse by ID</li>
-                    <li onclick="searchBible()">Search Bible</li>
+                    <ul class="sub-menu" id="bible-sub-menu">
+                        <li onclick="fetchBibles()">Fetch Bibles</li>
+                        <li onclick="fetchBibleById()">Bible by ID</li>
+                        <li onclick="fetchAudioBibles()">Audio Bibles</li>
+                        <li onclick="fetchAudioBibleById()">Audio Bible by ID</li>
+                        <li onclick="fetchBooks()">Fetch Books</li>
+                        <li onclick="fetchBookById()">Book by ID</li>
+                        <li onclick="fetchChapters()">Chapters</li>
+                        <li onclick="fetchChapterById()">Chapter by ID</li>
+                        <li onclick="fetchVerses()">Verses</li>
+                        <li onclick="fetchVerseById()">Verse by ID</li>
+                        <li onclick="searchBible()">Search Bible</li>
                     </ul>
-                <li onclick="loadContent('arenas')">ARENAS - People/Socials</li>
-                <li onclick="loadContent('associates')">ASSOCIATES - Partners/Societies</li>
-                <li onclick="loadContent('atlas')">ATLAS - Places/Sections</li>
-                <li onclick="loadContent('areas')">AREAS - Processes/Systems</li>
-                <li onclick="loadContent('agendas')">AGENDAS - Programs/Services</li>
-                <li onclick="loadContent('accounts')">ACCOUNTS - Plans/Sales</li>
-                <li onclick="loadContent('adverts')">ADVERTS - Promotions/Sellings</li>
-                <li onclick="loadContent('abouts')">ABOUTS - Portfolios/Speeches</li>
-                <li onclick="loadContent('acts')">ACTS - Policies/Statutes</li>
-                <li onclick="loadContent('articles')">ARTICLES - Publications/Stories</li>
+                </li>
+                <li onclick="loadContent('fetchBibles')">General Info</li>
             </ul>
         </div>
 
-        <div class="main-content" id="main-content">
-            <h2>Welcome to AHWHA APOSTOLICA</h2>
-            <p>Select an option from the side menu to fetch data.</p>
-        </div>
+        <main class="main-content" id="main-content">
+            <p class="coming-soon">Select an option from the sidebar to display content.</p>
+        </main>
 
         <div class="sidebar right-sidebar">
-            <h2>ADMIN</h2>
-            <ul>
-                <li onclick="loadContent('admins')">ADMINS - Profiles/Settings</li>
-                <li onclick="loadContent('amounts')">AMOUNTS - Payments/Savings</li>
-                <li onclick="loadContent('acquires')">ACQUIRES - Products/Services</li>
-                <li onclick="loadContent('ateliers')">ATELIERS - Projects/Studios</li>
-                <li onclick="loadContent('announces')">ANNOUNCES - Postings/Signs</li>
-                <li onclick="loadContent('archives')">ARCHIEVES - Progress/Saves</li>
-                <li onclick="loadContent('allys')">ALLYS - Pals/Supports</li>
-                <li onclick="loadContent('automates')">AUTOMATES - Processes/Systems</li>
-                <li onclick="loadContent('activities')">ACTIVITIES - Past/Saves</li>
-                <li onclick="loadContent('analysis')">ANALYSIS - Patterns/Statistics</li>
-            </ul>
+            <h2>RIGHT SIDEBAR</h2>
+            <p>Additional content can go here.</p>
         </div>
     </div>
 
     <footer>
-        AHWHA Conglomerate &copy; 2024
+        <p>&copy; 2024 AHWHA Apostolica. All Rights Reserved.</p>
     </footer>
 </body>
 
